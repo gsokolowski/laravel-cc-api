@@ -4,18 +4,18 @@ namespace App\Http\Controllers\User;
 
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
 
     // GET http://127.0.0.1:8000/api/users
     public function index()
     {
         $users = User::all();
-
-        // return using ApiController with TraitApiResponser
-        return $this->showAll($users, 200);
+        return response()->json([
+            'data' => $users
+        ], 200);
     }
 
     // POST http://127.0.0.1:8000/api/users + data for each fields
@@ -47,21 +47,25 @@ class UserController extends ApiController
         // now save data to db
         $user = User::create($data);
 
-        // return using ApiController with TraitApiResponser
-        return $this->showOne($user, 201);
+        return response()->json(['data' => $user], 201);
 
     }
 
     // GET http://127.0.0.1:8000/api/users/2
-    public function show(User $user) // implicit model binding
+    public function show($id)
     {
-        // user data is available, no need for running $user = User::findOrFail($id);
-        return $this->showOne($user, 200);
+        $user = User::findOrFail($id);
+        return response()->json([
+            'data' => $user
+        ], 200);
     }
 
     // PUT http://127.0.0.1:8000/api/users/2
-    public function update(Request $request, User $user) // implicit model binding
+    public function update(Request $request, $id)
     {
+        // get current user by id
+        $user = User::findOrFail($id);
+
 
         $validationRules = [
             'email' => 'email|unique:users,email,' . $user->id,
@@ -90,10 +94,11 @@ class UserController extends ApiController
 
         // if request has field admin then only verified users can modify the admin field
         if ($request->has('admin')) {
-
             if (!$user->isVerified()) {
-
-                return $this->errorResponse('Only verified users can modify the admin field', 409);
+                return response()->json([
+                    'error' => 'Only verified users can modify the admin field',
+                    'code' => 409
+                ], 409);
             }
             // otherwise assign the value. It is not admin
             $user->admin = $request->admin;
@@ -102,23 +107,25 @@ class UserController extends ApiController
         // if isDirty doesn't return true it means nothing has changed (not even one field)
         // so return 422
         if (!$user->isDirty()) {
-
-            return $this->errorResponse('No changes passed for the user - specify values you would like to update', 422);
+            return response()->json([
+                'error' => 'No changes passed for the user - specify values you would like to update',
+                'code' => 422
+            ], 422);
         }
 
         // something has been changed e.g name or town or city so save on model
         $user->save();
-
-        return $this->showOne($user, 200);
-
+        return response()->json(['data' => $user], 200);
     }
 
     // PUT http://127.0.0.1:8000/api/users/1 - will be softDeleted()
-    public function destroy(User $user) // implicit model binding
+    public function destroy($id)
     {
+        // get current user by id
+        $user = User::findOrFail($id);
 
         $user->delete();
 
-        return $this->showOne($user, 200);
+        return response()->json(['data' => $user], 200);
     }
 }

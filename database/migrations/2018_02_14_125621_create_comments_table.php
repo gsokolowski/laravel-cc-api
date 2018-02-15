@@ -15,7 +15,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('text');
+            $table->text('text');
             $table->boolean('public')->default(0);
             $table->integer('user_id')->unsigned(); // can't be negative
             $table->integer('article_id')->unsigned(); // can't be negative

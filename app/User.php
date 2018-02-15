@@ -21,12 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'photo',
+        'avatar',
+        'city',
+        'country',
         'verified',
         'verification_token',
-        'town',
-        'country',
-        'admin' // zrob najpier tak a pozniej dodasz role i zmienisz
+        'admin'
     ];
 
     /**

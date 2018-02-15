@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+
     public function run()
     {
         // Seed Database through factories files
@@ -30,17 +26,17 @@ class DatabaseSeeder extends Seeder
 
         // - clear truncate whole DB for the project through model class
         User::truncate();
-        $this->removeImages('storage/images/user/*');
+        $this->removeImages('app/public/images/avatar/*.jpg');
 
         Category::truncate();
 
         Article::truncate();
-        $this->removeImages('storage/images/article/*');
+        $this->removeImages('app/public/images/article/*.jpg');
 
         Image::truncate();
         Comment::truncate();
 
-        $usersQuantity = 2;
+        $usersQuantity = 3;
         $categoriesQuantity = 5;
         $articlesQuantity = 10;
         $imagesQuantity = 30;
@@ -48,11 +44,19 @@ class DatabaseSeeder extends Seeder
 
         // use factory to create inserts
         factory(User::class, $usersQuantity)->create(); // create() is to store data in db
+        $this->command->info('User table seeded!');
+
         factory(Category::class, $categoriesQuantity)->create();
+        $this->command->info('Category table seeded!');
+
         factory(Article::class, $articlesQuantity)->create();
+        $this->command->info('Article table seeded!');
 
         factory(Image::class, $imagesQuantity)->create();
+        $this->command->info('Image table seeded!');
+
         factory(Comment::class, $commentsQuantity)->create();
+        $this->command->info('Comment table seeded!');
 
 
         // Seed Database through seeder files
@@ -62,8 +66,11 @@ class DatabaseSeeder extends Seeder
 
     private function removeImages($path) {
 
-        $files = glob($path); // get all file names
-        foreach($files as $file){ // iterate files
+        //dd(storage_path($path));
+        $files = glob(storage_path($path)); // get all file names
+        //dd($files);
+
+        foreach($files as $file) { // iterate files
             if(is_file($file))
                 unlink($file); // delete file
         }
