@@ -15,6 +15,7 @@ return [
 
     'default' => env('FILESYSTEM_DRIVER', 'local'),
 
+
     /*
     |--------------------------------------------------------------------------
     | Default Cloud Filesystem Disk
@@ -52,6 +53,18 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
+        'images-article' => [
+            'driver' => 'local',
+            'root' => public_path('images/article'),
+            'visibility' => 'public',
+        ],
+
+        'images-avatar' => [
+            'driver' => 'local',
+            'root' => public_path('images/avatar'),
             'visibility' => 'public',
         ],
 

@@ -29,4 +29,11 @@ trait TraitApiResponser
     {
         return $this->successResponse(['data' => $model], $code);
     }
+
+    // showMessage() is used for verifiy mailing system
+    protected function showMessage($message, $code = 200)
+    {
+        return $this->successResponse($message, $code);
+    }
+
 }

@@ -20,7 +20,10 @@ use Illuminate\Http\Request;
 //});
 
 
-Route::resource('users', 'User\UserController', ['except'=>['create', 'edit']] ); // don't
+Route::resource('users', 'User\UserController', ['except'=>['create', 'edit']] );
+Route::name('users.verify')->get('users/verify/{token}', 'User\UserController@verify');
+
+
 Route::resource('categories', 'Category\CategoryController', ['except'=>['create', 'edit']] );
 Route::resource('articles', 'Article\ArticleController', ['only'=>['index', 'show', 'destroy']] );
 Route::resource('images', 'Image\ImageController', ['only'=>['index', 'show', 'destroy']] );

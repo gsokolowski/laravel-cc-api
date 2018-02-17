@@ -26,12 +26,12 @@ class DatabaseSeeder extends Seeder
 
         // - clear truncate whole DB for the project through model class
         User::truncate();
-        $this->removeImages('app/public/images/avatar/*.jpg');
+        $this->removeImages('images/avatar/*.jpg');
 
         Category::truncate();
 
         Article::truncate();
-        $this->removeImages('app/public/images/article/*.jpg');
+        $this->removeImages('images/article/*.jpg');
 
         Image::truncate();
         Comment::truncate();
@@ -66,9 +66,9 @@ class DatabaseSeeder extends Seeder
 
     private function removeImages($path) {
 
-        //dd(storage_path($path));
-        $files = glob(storage_path($path)); // get all file names
-        //dd($files);
+        $files = glob(public_path($path)); // get all file names
+        //$files = glob(storage_path($path)); // get all file names
+
 
         foreach($files as $file) { // iterate files
             if(is_file($file))

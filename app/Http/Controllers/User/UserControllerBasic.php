@@ -6,7 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class UserController extends Controller
+class UserControllerBasic extends Controller
 {
 
     // GET http://127.0.0.1:8000/api/users
@@ -128,4 +128,5 @@ class UserController extends Controller
 
         return response()->json(['data' => $user], 200);
     }
+
 }

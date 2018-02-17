@@ -27,7 +27,8 @@ $factory->define(User::class, function (Faker\Generator $faker) {
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
-        'avatar' => $faker->image('storage/app/public/images/avatar',400,400, 'people', false),
+        //'avatar' => $faker->image('storage/app/public/images/avatar',400,400, 'people', false),
+        'avatar' => $faker->image('public/images/avatar',400,400, 'people', false),
         'city' => $faker->city(),
         'country' => $faker->country(),
         'remember_token' => str_random(10),
@@ -63,8 +64,8 @@ $factory->define(Article::class, function (Faker\Generator $faker) {
 // Image
 $factory->define(Image::class, function (Faker\Generator $faker) {
     return [
-        // tu jest problem z images
-        'image' => $faker->image('storage/app/public/images/article',400,400, 'technics', false),
+        //'image' => $faker->image('storage/app/public/images/article',400,400, 'technics', false),
+        'image' => $faker->image('public/images/article',400,400, 'technics', false),
         'caption' => $faker->paragraph(1),
         'type' => $faker->randomElement(['hero', 'card', 'in-text']),
         'article_id' => Article::all()->random()->id,

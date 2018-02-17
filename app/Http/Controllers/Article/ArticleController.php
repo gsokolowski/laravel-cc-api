@@ -23,6 +23,12 @@ class ArticleController extends ApiController
         return $this->showOne($article, 200); // using trait
     }
 
+    // POST http://127.0.0.1:8000/api/users + data for each fields
+    public function store(Request $request)
+    {
+        $data['images'] = $request->images->store('', 'images-article');
+    }
+
     public function destroy($id)
     {
         $article = Article::findOrFail($id);

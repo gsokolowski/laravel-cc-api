@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends ApiController
 {
@@ -36,7 +37,9 @@ class UserController extends ApiController
         $data = $request->all();
 
         // now override these 5 fields
-        $data['avatar'] = 'avatar.png';
+        // this comes from filesystems.php, first argument is path which is default from filesystem images-avatar
+        $data['avatar'] = $request->avatar->store('', 'images-avatar');
+
         $data['password'] = bcrypt($request->password);
         $data['verified'] = User::UNVERIFIED_USER; // user is unverified for start
         // generate Verification Token and store it with user
@@ -70,6 +73,9 @@ class UserController extends ApiController
 
         $this->validate($request, $validationRules);
 
+        // When you update you need to check if field has been passed
+        // and you override field by field
+
         // if name is sent to update that we have to take it
         if ($request->has('name')) {
             $user->name = $request->name;
@@ -92,11 +98,32 @@ class UserController extends ApiController
         if ($request->has('admin')) {
 
             if (!$user->isVerified()) {
-
                 return $this->errorResponse('Only verified users can modify the admin field', 409);
             }
             // otherwise assign the value. It is not admin
             $user->admin = $request->admin;
+        }
+
+        if ($request->has('city')) {
+            $user->city = $request->city;
+        }
+
+        if ($request->has('country')) {
+            $user->country = $request->country;
+        }
+
+        // if avatar is sent to update that we have to take it
+        if ($request->hasFile('avatar')) {
+
+            // remove old image
+            $fileExists = Storage::disk('images-avatar')->exists($user->avatar);
+            if($fileExists) {
+                Storage::disk('images-avatar')->delete($user->avatar);
+            }
+
+            // update db and save in storage new file
+            $user->avatar = $request->avatar->store('', 'images-avatar');
+
         }
 
         // if isDirty doesn't return true it means nothing has changed (not even one field)
@@ -105,7 +132,6 @@ class UserController extends ApiController
 
             return $this->errorResponse('No changes passed for the user - specify values you would like to update', 422);
         }
-
         // something has been changed e.g name or town or city so save on model
         $user->save();
 
@@ -119,6 +145,31 @@ class UserController extends ApiController
 
         $user->delete();
 
+        $fileExists = Storage::disk('images-avatar')->exists($user->avatar);
+        if($fileExists) {
+            Storage::disk('images-avatar')->delete($user->avatar);
+        }
+
         return $this->showOne($user, 200);
+    }
+
+
+    // GET http://127.0.0.1:8000/api/users/verify/tCiQW0mD0x6Xm8U9RsqmmSpoemFhEb6bhnxGH0l4
+    public function verify($token) {
+
+        // find user coresponding to passed token
+        $user = User::where('verification_token', $token)->firstOrFail();
+
+        // make him verified
+        $user->verified = User::VERIFIED_USER;
+
+        // remove token
+        $user->verification_token = null;
+
+        // save on user update
+        $user->save();
+
+        // send message
+        return $this->showMessage('The account has been verified successuly', 200);
     }
 }
