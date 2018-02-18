@@ -24,10 +24,6 @@ class UserController extends ApiController
     // POST http://127.0.0.1:8000/api/users + data for each fields
     public function store(Request $request)
     {
-
-        echo config('app.name');
-        dd('ssa');
-
         $validationRules = [
             'name' => 'required',
             'email' => 'required|email|unique:users',
