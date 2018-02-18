@@ -28,6 +28,9 @@ class DatabaseSeeder extends Seeder
         User::truncate();
         $this->removeImages('images/avatar/*.jpg');
 
+        // to avoid sending emails on user::create event
+        User::flushEventListeners();
+
         Category::truncate();
 
         Article::truncate();

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Mail\UserCreated;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends ApiController
@@ -22,6 +24,10 @@ class UserController extends ApiController
     // POST http://127.0.0.1:8000/api/users + data for each fields
     public function store(Request $request)
     {
+
+        echo config('app.name');
+        dd('ssa');
+
         $validationRules = [
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -171,5 +177,22 @@ class UserController extends ApiController
 
         // send message
         return $this->showMessage('The account has been verified successuly', 200);
+    }
+
+    public function resend(User $user) {
+
+        if($user->isVerified()) {
+
+            return $this->errorResponse('This user is alredy verified', 409);
+        }
+
+        User::created(function($user) {
+            // Retry 5 times doing that is in function() and try every 100 milisecond
+            retry(5, function() use ($user) {
+                Mail::to($user->email)->send(new UserCreated($user));
+            },100);
+        });
+
+        return $this->showMessage('The verification email has been resend', 409);
     }
 }

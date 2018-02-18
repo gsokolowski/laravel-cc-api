@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 
 Route::resource('users', 'User\UserController', ['except'=>['create', 'edit']] );
 Route::name('users.verify')->get('users/verify/{token}', 'User\UserController@verify');
+Route::name('users.resent')->get('users/{user}/resend', 'User\UserController@resend');
 
 
 Route::resource('categories', 'Category\CategoryController', ['except'=>['create', 'edit']] );
