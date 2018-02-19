@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Traits\TraitCache;
 use App\Mail\UserCreated;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends ApiController
 {
 
+    use TraitCache;
+
     // GET http://127.0.0.1:8000/api/users
     public function index()
     {
-        $users = User::all();
+        // $this->forgetCache($this->getCacheKey());
+
+        $data = User::all();
+        $users = $this->cacheIfNotCachedAndGetCollection($this->getCacheKey(), $data);
 
         // return using ApiController with TraitApiResponser
         return $this->showAll($users, 200);
@@ -51,6 +58,9 @@ class UserController extends ApiController
 
         // now save data to db
         $user = User::create($data);
+
+        // Cache - user added - remove cache for this cacheKey
+        $this->forgetCache($this->getCacheKey());
 
         // return using ApiController with TraitApiResponser
         return $this->showOne($user, 201);
@@ -137,6 +147,9 @@ class UserController extends ApiController
         // something has been changed e.g name or town or city so save on model
         $user->save();
 
+        // Cache - User updated - here you set up cache for a cacheKey
+        $this->forgetCache($this->getCacheKey());
+
         return $this->showOne($user, 200);
 
     }
@@ -151,6 +164,9 @@ class UserController extends ApiController
         if($fileExists) {
             Storage::disk('images-avatar')->delete($user->avatar);
         }
+
+        // Cache - User deleted - here you set up cache for a cacheKey
+        $this->forgetCache($this->getCacheKey());
 
         return $this->showOne($user, 200);
     }

@@ -35,5 +35,4 @@ trait TraitApiResponser
     {
         return $this->successResponse($message, $code);
     }
-
 }
