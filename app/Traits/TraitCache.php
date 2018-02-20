@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Cache;
 
 trait TraitCache
 {
+
+    // make key as url path
     protected function getCacheKey() {
         return request()->url();
     }
@@ -21,7 +23,7 @@ trait TraitCache
         return $data;
     }
 
-    // remove cache on key
+    // remove cache on specific key
     protected function forgetCache($key) {
         Cache::forget($key);
     }

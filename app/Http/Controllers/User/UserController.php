@@ -19,9 +19,9 @@ class UserController extends ApiController
     // GET http://127.0.0.1:8000/api/users
     public function index()
     {
-        // $this->forgetCache($this->getCacheKey());
 
         $data = User::all();
+        // create cache for data
         $users = $this->cacheIfNotCachedAndGetCollection($this->getCacheKey(), $data);
 
         // return using ApiController with TraitApiResponser
@@ -147,7 +147,7 @@ class UserController extends ApiController
         // something has been changed e.g name or town or city so save on model
         $user->save();
 
-        // Cache - User updated - here you set up cache for a cacheKey
+        // Cache - User updated - remove cache flush cache for that key
         $this->forgetCache($this->getCacheKey());
 
         return $this->showOne($user, 200);
@@ -165,7 +165,7 @@ class UserController extends ApiController
             Storage::disk('images-avatar')->delete($user->avatar);
         }
 
-        // Cache - User deleted - here you set up cache for a cacheKey
+        // Cache - User deleted - remove cache flush cache for that key
         $this->forgetCache($this->getCacheKey());
 
         return $this->showOne($user, 200);

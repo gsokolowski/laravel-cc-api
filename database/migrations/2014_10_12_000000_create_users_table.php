@@ -18,13 +18,13 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('avatar');
-            $table->string('city');
-            $table->string('country');
+            $table->string('avatar')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
             $table->rememberToken();
-            $table->string('verified');
+            $table->string('verified')->default(0);
             $table->string('verification_token')->nullable();
-            $table->string('admin');
+            $table->string('admin')->default(false);
             $table->timestamps();
             $table->softDeletes(); // will add new column deleted_at
         });
