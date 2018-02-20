@@ -66,8 +66,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'verification_token' => User::generateVerificationCode(),
-            'admin'=>'false'
+            'verification_token' => User::generateVerificationCode()
         ]);
 
 

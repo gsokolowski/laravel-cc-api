@@ -1,5 +1,5 @@
 <?php
-
+ini_set('xdebug.max_nesting_level', 300);
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,6 +32,7 @@ $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm
 $this->post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
 Route::get('/', function() {
     return view('welcome');
