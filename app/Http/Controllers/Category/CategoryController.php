@@ -9,6 +9,11 @@ use App\Http\Controllers\ApiController;
 class CategoryController extends ApiController
 {
 
+    public function __construct()
+    {
+        $this->middleware('client.credentials')->only(['index', 'show']);
+    }
+
     public function index()
     {
         $categories = Category::all();

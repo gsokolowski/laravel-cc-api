@@ -16,6 +16,11 @@ class UserController extends ApiController
 
     use TraitCache;
 
+    public function __construct()
+    {
+        $this->middleware('client.credentials')->only(['index', 'show']);
+    }
+
     // GET http://127.0.0.1:8000/api/users
     public function index()
     {

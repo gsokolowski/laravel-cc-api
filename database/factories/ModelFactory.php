@@ -61,6 +61,7 @@ $factory->define(Article::class, function (Faker\Generator $faker) {
     ];
 });
 
+
 // Image
 $factory->define(Image::class, function (Faker\Generator $faker) {
     return [

@@ -29,6 +29,9 @@ Route::resource('articles', 'Article\ArticleController', ['only'=>['index', 'sho
 Route::resource('images', 'Image\ImageController', ['only'=>['index', 'show', 'destroy']] );
 Route::resource('comments', 'Comment\CommentController', ['only'=>['index', 'show', 'destroy']] );
 
+// passport route adder - overrides throttle middleware into api middleware
+Route::post('oauth/token', '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
+
 
 /**
  *
